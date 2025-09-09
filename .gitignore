@@ -193,3 +193,9 @@ pyrightconfig.json
 .ionide
 
 # End of https://www.toptal.com/developers/gitignore/api/python,visualstudiocode
+
+*.lock
+# Unidet checkpoint
+src/UniDet_eval/experts/expert_weights/
+# output files
+output/
