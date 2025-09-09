@@ -214,7 +214,7 @@ def VQA(evaluate, device, seed, distributed, config, result_dir, output_dir):
 
 
 def VQA_main(ann_root, output_dir, inference="vqa_prob"):  # annotation path, output path
-    config = Path(__file__).parent.parent / "configs/vqa.yaml"  # todo config file
+    config = Path(__file__).resolve().parent.parent / "configs/vqa.yaml"  # todo config file
     evaluate = True
     device = "cuda"
     seed = 42

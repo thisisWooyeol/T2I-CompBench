@@ -19,7 +19,7 @@ from .med import BertConfig, BertLMHeadModel, BertModel
 
 set_verbosity_error()
 logger = logging.getLogger(__name__)
-CONFIG_DIR_PATH = Path(__file__).parent.parent / "configs"
+CONFIG_DIR_PATH = Path(__file__).resolve().parent.parent / "configs"
 
 
 class BLIP_Pretrain(nn.Module):

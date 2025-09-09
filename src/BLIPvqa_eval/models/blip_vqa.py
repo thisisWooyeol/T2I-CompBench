@@ -8,7 +8,7 @@ from torch import nn
 from .blip import create_vit, init_tokenizer, load_checkpoint
 from .med import BertConfig, BertLMHeadModel, BertModel
 
-CONFIG_DIR_PATH = Path(__file__).parent.parent / "configs"
+CONFIG_DIR_PATH = Path(__file__).resolve().parent.parent / "configs"
 
 
 class BLIP_VQA(nn.Module):

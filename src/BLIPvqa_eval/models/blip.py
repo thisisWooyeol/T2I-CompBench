@@ -21,7 +21,7 @@ from .vit import VisionTransformer, interpolate_pos_embed
 
 warnings.filterwarnings("ignore")
 
-CONFIG_DIR_PATH = Path(__file__).parent.parent / "configs"
+CONFIG_DIR_PATH = Path(__file__).resolve().parent.parent / "configs"
 
 
 class BLIP_Base(nn.Module):
