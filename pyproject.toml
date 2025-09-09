@@ -1,8 +1,53 @@
 [project]
 name = "t2i-compbench"
 version = "0.1.0"
-requires-python = "==3.12.*"
+requires-python = ">=3.11,< 3.12"
 maintainers = [
     { name = "Wooyeol Lee", email = "wooyeol0519@snu.ac.kr" }
 ]
-dependencies = []
+dependencies = [
+    "accelerate>=1.6.0",
+    "clip",
+    "detectron2",
+    "diffusers==0.33.1",
+    "en-core-web-sm",
+    "gdown==5.2.0",
+    "numpy==1.24.4",
+    "opencv-python==4.11.0.86",
+    "pillow==9.5.0",
+    "pyyaml==6.0.2",
+    "ruamel-yaml==0.18.10",
+    "transformers==4.51.3",
+    "word2number==1.1",
+]
+
+[dependency-groups]
+lint = ["ruff"]
+typecheck = ["mypy", "pandas-stubs", "scipy-stubs", "types-tqdm", "rdkit-stubs"]
+test = ["pytest", "coverage"]
+dev = [
+    { include-group = "lint" },
+    { include-group = "typecheck" },
+    { include-group = "test" },
+    "debugpy",
+    "jupyter",
+]
+
+[tool.uv.sources]
+en-core-web-sm = { url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.5.0/en_core_web_sm-3.5.0-py3-none-any.whl" }
+clip = { git = "https://github.com/openai/CLIP.git" }
+detectron2 = { git = "https://github.com/facebookresearch/detectron2.git", rev = "5aeb252b194b93dc2879b4ac34bc51a31b5aee13" }
+
+
+[tool.uv.extra-build-dependencies]
+detectron2 = ["setuptools", "torch"]
+
+
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
