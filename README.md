@@ -64,29 +64,13 @@ The question*id is the \_prompt_idx* of the image file name, for example, _0_0_0
 
 ### How to run
 
+You can run the evaluation script `run_t2i_compbench.sh` to evaluate all the tasks or specific tasks. Here are some example commands:
+
 ```bash
-
-METHOD_NAME="SD15"
-IMAGE_ROOT_DIR="/path/to/your/images"
-OUT_ROOT_DIR="output/${METHOD_NAME}"
-
-# 1. BLIP-VQA evaluation (for color and texture)
-# Currently we do not support shape evaluation
-
-# Run BLIP-VQA evaluation on color
-python src/BLIPvqa_eval/BLIP_vqa.py \
-    --input_image_dir ${IMAGE_ROOT_DIR}/color \
-    --out_dir ${OUT_ROOT_DIR}/color
-
-# Run BLIP-VQA evaluation on texture
-python src/BLIPvqa_eval/BLIP_vqa.py \
-    --input_image_dir ${IMAGE_ROOT_DIR}/texture \
-    --out_dir ${OUT_ROOT_DIR}/texture
-
-# 2. UniDet evaluation (for numeracy)
-# ! Currently we do not support 2D/3D-spatial relationship evaluation
-
-python src/UniDet_eval/numeracy_eval.py \
-    --input_image_dir ${IMAGE_ROOT_DIR}/numeracy \
-    --out_dir ${OUT_ROOT_DIR}/numeracy
+# Run all evaluations (METHOD_NAME is auto-extracted)
+./run_t2i_compbench.sh "/path/to/images"
+# Run specific evaluations (e.g., only numeracy)
+./run_t2i_compbench.sh "/path/to/images" --skip-color --skip-texture --skip-complex
+# Run with custom METHOD_NAME and OUTPUT_DIR
+./run_t2i_compbench.sh "/path/to/images" "CustomMethodName" "/custom/output/dir"
 ```
