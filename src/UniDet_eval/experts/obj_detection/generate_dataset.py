@@ -20,7 +20,7 @@ class Dataset(Dataset):
         self.transform = transform
 
         data_imgs = os.listdir(data_path)
-        # filename pattern: f"{idx}_{itr}_{level}_" + prompt.replace(" ", "_").jpg
+        # filename pattern: f"{idx}_{itr}_{level}_" + prompt.jpg
         data_imgs.sort(key=lambda x: int(x.split("_")[0]))  # sort by idx (first part)
         self.data_list = [os.path.join(data_path, data) for data in data_imgs]
 

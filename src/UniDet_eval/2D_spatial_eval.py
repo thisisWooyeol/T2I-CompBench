@@ -1,17 +1,18 @@
 import argparse
 import json
 import os
+from pathlib import Path
 
 import spacy
 import torch
 from accelerate import Accelerator
-from ruamel.yaml import YAML
 from tqdm import tqdm
 
 from UniDet_eval.experts.model_bank import load_expert_model
 from UniDet_eval.experts.obj_detection.generate_dataset import Dataset, collate_fn
 
-obj_label_map = torch.load("dataset/detection_features.pt")["labels"]
+UNIDET_ROOT = Path(__file__).resolve().parent
+obj_label_map = torch.load(UNIDET_ROOT / "dataset/detection_features.pt")["labels"]
 
 
 def determine_position(locality, box1, box2, iou_threshold=0.1, distance_threshold=150):
@@ -107,16 +108,21 @@ def get_mask_labels(depth, instance_boxes, instance_id):
 def parse_args():
     parser = argparse.ArgumentParser(description="UniDet evaluation.")
     parser.add_argument(
-        "--outpath",
+        "--input_image_dir",
         type=str,
-        default="../examples/",
+        required=True,
+        help="Path to the folder containing images to be evaluated",
+    )
+    parser.add_argument(
+        "--out_dir",
+        type=str,
+        required=True,
         help="Path to output score",
     )
     parser.add_argument(
         "--complex",
-        type=bool,
-        default=False,
-        help="Prompt is simple structure or in complex category",
+        action="store_true",
+        help="To evaluate on samples in complex category or not",
     )
     args = parser.parse_args()
     return args
@@ -127,15 +133,12 @@ def main():
     model, transform = load_expert_model(task="obj_detection", ckpt="RS200")
     accelerator = Accelerator(mixed_precision="fp16")
 
-    yaml_loader = YAML(typ="rt")  # 'rt' means RoundTrip, keeps formatting
-    with open("configs/experts.yaml", "r") as f:
-        config = yaml_loader.load(f)
-    outpath = args.outpath
-    data_path = outpath
-    save_path = f"{outpath}/labels"
+    # yaml_loader = YAML(typ="rt")  # 'rt' means RoundTrip, keeps formatting
+    # with open("configs/experts.yaml", "r") as f:
+    #     config = yaml_loader.load(f)
 
     batch_size = 64
-    dataset = Dataset(data_path, transform)
+    dataset = Dataset(args.input_image_dir, transform)
     data_loader = torch.utils.data.DataLoader(
         dataset=dataset,
         batch_size=batch_size,
@@ -149,7 +152,7 @@ def main():
 
     with torch.no_grad():
         result = []
-        map_result = []
+        question_id = 0
         for i, test_data in enumerate(tqdm(data_loader)):
             test_pred = model(test_data)
             for k in range(len(test_pred)):
@@ -168,7 +171,9 @@ def main():
                     obj.append(obj_name)
 
                 img_path_split = test_data[k]["image_path"].split("/")
-                prompt = img_path_split[-1].split("_")[0]  # get prompt from file names
+                file_name_stem = Path(img_path_split[-1]).stem  # remove .jpg suffix
+                prompt = file_name_stem.split("_", 3)[-1]  # get the prompt part
+
                 vocab_spatial = [
                     "on side of",
                     "next to",
@@ -287,17 +292,14 @@ def main():
                     score = 0
 
                 image_dict = {}
-                image_dict["question_id"] = int(img_path_split[-1].split("_")[-1].split(".")[0])
+                image_dict["question_id"] = question_id
                 image_dict["answer"] = score
+                image_dict["image"] = img_path_split[-1]
                 result.append(image_dict)
 
-                # add mapping
-                map_dict = {}
-                map_dict["image"] = img_path_split[-1]
-                map_dict["question_id"] = int(img_path_split[-1].split("_")[-1].split(".")[0])
-                map_result.append(map_dict)
+                question_id += 1
 
-        im_save_path = os.path.join(save_path, "annotation_obj_detection_2d")
+        im_save_path = os.path.join(args.out_dir, "annotation_obj_detection_2d")
         os.makedirs(im_save_path, exist_ok=True)
 
         with open(os.path.join(im_save_path, "vqa_result.json"), "w") as f:
@@ -308,13 +310,9 @@ def main():
         avg_score = 0
         for i in range(len(result)):
             avg_score += float(result[i]["answer"])
-        with open(os.path.join(im_save_path, "avg_score.txt"), "w") as f:
-            f.write("score avg:" + str(avg_score / len(result)))
+        with open(os.path.join(im_save_path, "score.txt"), "w") as f:
+            f.write("score:" + str(avg_score / len(result)))
         print("avg score:", avg_score / len(result))
-
-        # save mapping
-        with open(os.path.join(im_save_path, "mapping.json"), "w") as f:
-            json.dump(map_result, f)
 
 
 if __name__ == "__main__":
