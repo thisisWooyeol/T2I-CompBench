@@ -125,7 +125,7 @@ def main():
 
     # calculate avg of BLIP-VQA as BLIP-VQA score
     print("BLIP-VQA score:", reward_after / len(r), "!\n")
-    with open(f"{out_dir}/annotation{order}/blip_vqa_score.txt", "w") as file:
+    with open(f"{out_dir}/annotation{order}/score.txt", "w") as file:
         file.write("BLIP-VQA score:" + str(reward_after / len(r)))
 
 

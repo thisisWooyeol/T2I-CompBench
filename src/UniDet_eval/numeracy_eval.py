@@ -205,9 +205,7 @@ def main():
                         if num_det == num_obj[i]:
                             score += 0.5 * weight
 
-                score_map.append(
-                    {"question_id": int(img_path_split[-1].split(".png")[0].split("_")[1]), "answer": score}
-                )
+                score_map.append({"question_id": cnt, "answer": score, "image": img_path_split[-1]})
                 cnt += 1
                 total_score += score
 
@@ -217,7 +215,7 @@ def main():
             json.dump(score_map, f)
 
         with open(os.path.join(p, "score.txt"), "w") as f:
-            f.write(f"total:{total_score} num:{cnt} avg:{str(total_score / cnt)}")
+            f.write(f"total:{total_score} num:{cnt} score:{str(total_score / cnt)}")
 
 
 if __name__ == "__main__":
