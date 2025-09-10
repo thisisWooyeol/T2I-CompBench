@@ -1,6 +1,7 @@
 import argparse
 import json
 import os
+from pathlib import Path
 
 import spacy
 import torch
@@ -14,7 +15,7 @@ def Create_annotation_for_BLIP(image_folder, outpath, np_index=None):
 
     annotations = []
     file_names = os.listdir(image_folder)
-    # filename pattern: f"{idx}_{itr}_{level}_" + prompt.replace(" ", "_").jpg
+    # filename pattern: f"{idx}_{itr}_{level}_" + prompt.jpg
     file_names.sort(key=lambda x: int(x.split("_")[0]))  # sort by idx (first part)
 
     cnt = 0
@@ -22,21 +23,12 @@ def Create_annotation_for_BLIP(image_folder, outpath, np_index=None):
     # output annotation.json
     for file_name in file_names:
         image_dict = {}
-        image_dict["image"] = image_folder + file_name
+        image_dict["image"] = str(Path(image_folder) / file_name)
         image_dict["question_id"] = cnt
-        # Extract prompt from filename: remove idx_itr_level_ prefix and .jpg suffix, then replace _ with spaces
-        parts = file_name.split("_")
-        if len(parts) >= 4:  # Should have at least idx_itr_level_prompt
-            # Join all parts after the first 3 (idx, itr, level) and before the file extension
-            prompt_part = "_".join(parts[3:])
-            # Remove file extension
-            prompt_part = prompt_part.rsplit(".", 1)[0]
-            # Replace underscores with spaces to restore original prompt
-            f = prompt_part.replace("_", " ")
-        else:
-            # Fallback: use entire filename without extension
-            f = file_name.rsplit(".", 1)[0]
-        doc = nlp(f)
+
+        file_name_stem = Path(file_name).stem  # remove .jpg suffix
+        prompt = file_name_stem.split("_", 3)[-1]  # get the prompt part
+        doc = nlp(prompt)
 
         noun_phrases = []
         for chunk in doc.noun_chunks:

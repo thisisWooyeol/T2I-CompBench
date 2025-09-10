@@ -1,7 +1,6 @@
 import argparse
 import json
 import os
-import warnings
 from pathlib import Path
 
 import spacy
@@ -143,20 +142,9 @@ def main():
 
                 img_path_split = test_data[k]["image_path"].split("/")
 
-                # filename pattern: f"{idx}_{itr}_{level}_" + prompt.replace(" ", "_").jpg
-                # Extract prompt from filename: remove idx_itr_level_ prefix and .jpg suffix, then replace _ with spaces
-                parts = img_path_split[-1].split("_")
-                if len(parts) >= 4:  # Should have at least idx_itr_level_prompt
-                    # Join all parts after the first 3 (idx, itr, level) and before the file extension
-                    prompt_part = "_".join(parts[3:])
-                    # Remove file extension
-                    prompt_part = prompt_part.rsplit(".", 1)[0]
-                    # Replace underscores with spaces to restore original prompt
-                    prompt = prompt_part.replace("_", " ")
-                else:
-                    warnings.warn(f"Filename {img_path_split[-1]} does not conform to expected pattern.")
-                    warnings.warn("Using entire filename without extension as prompt.")
-                    prompt = img_path_split[-1].rsplit(".", 1)[0]
+                # filename pattern: f"{idx}_{itr}_{level}_" + prompt.jpg
+                file_name_stem = Path(img_path_split[-1]).stem  # remove .jpg suffix
+                prompt = file_name_stem.split("_", 3)[-1]  # get the prompt part
 
                 doc = nlp(prompt)
                 number = ["a", "an", "one", "two", "three", "four", "five", "six", "seven", "eight"]
