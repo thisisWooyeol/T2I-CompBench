@@ -249,7 +249,7 @@ for TASK in "${AVAILABLE_TASKS[@]}"; do
             echo "  2D-spatial score: $(cat ${TASK_OUTPUT_DIR}/annotation_obj_detection_2d/score.txt)"
         fi
         if [ -f "${TASK_OUTPUT_DIR}/3_in_1_score.txt" ]; then
-            echo "  3-in-1 score: $(cat ${TASK_OUTPUT_DIR}/3_in_1_score.txt)"
+            echo "  3-in-1 score: $(cat ${TASK_OUTPUT_DIR}/annotation_3_in_1/score.txt)"
         fi
         echo ""
     fi
