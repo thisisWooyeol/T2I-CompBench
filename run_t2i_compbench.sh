@@ -212,6 +212,7 @@ for TASK in "${AVAILABLE_TASKS[@]}"; do
             # Step 4: 3-in-1 score calculation
             echo "  Step 4/4: Running 3-in-1 score calculation..."
             python src/3_in_1_eval/3_in_1.py \
+                --input_result_dir "${OUT_ROOT_DIR}/complex" \
                 --out_dir "${OUT_ROOT_DIR}/complex"
             check_command "Complex 3-in-1 score calculation"
             ;;
