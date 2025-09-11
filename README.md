@@ -74,3 +74,7 @@ You can run the evaluation script `run_t2i_compbench.sh` to evaluate all the tas
 # Run with custom METHOD_NAME and OUTPUT_DIR
 ./run_t2i_compbench.sh "/path/to/images" "CustomMethodName" "/custom/output/dir"
 ```
+
+## License
+
+This project is licensed under the MIT License. See the "LICENSE.txt" file for details. For detailed information on third-party licenses, please see the [NOTICE.md](https://github.com/Karine-Huang/T2I-CompBench/edit/main/NOTICE.md) file.
