@@ -16,9 +16,9 @@ import torch
 from accelerate import Accelerator
 from tqdm import tqdm
 
-from UniDet_eval.experts.depth.generate_dataset import Dataset as Dataset_depth
-from UniDet_eval.experts.model_bank_3d import load_expert_model
-from UniDet_eval.experts.obj_detection.generate_dataset_3d import Dataset, collate_fn
+from t2i_compbench.UniDet_eval.experts.depth.generate_dataset import Dataset as Dataset_depth
+from t2i_compbench.UniDet_eval.experts.model_bank_3d import load_expert_model
+from t2i_compbench.UniDet_eval.experts.obj_detection.generate_dataset_3d import Dataset, collate_fn
 
 obj_label_map = torch.load("dataset/detection_features.pt")["labels"]
 

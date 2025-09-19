@@ -33,6 +33,10 @@ dev = [
     "jupyter",
 ]
 
+[project.scripts]
+run_t2i_compbench_eval = "t2i_compbench.cli:main"
+
+
 [tool.uv.sources]
 en-core-web-sm = { url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.5.0/en_core_web_sm-3.5.0-py3-none-any.whl" }
 clip = { git = "https://github.com/openai/CLIP.git" }
@@ -46,6 +50,12 @@ detectron2 = ["setuptools", "torch"]
 [build-system]
 requires = ["setuptools>=64"]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]   
+
+[tool.setuptools.package-data]
+t2i_compbench = ["t2i_dataset/*", "run_t2i_compbench.sh"]
 
 
 [tool.ruff]

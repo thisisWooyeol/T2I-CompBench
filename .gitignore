@@ -196,6 +196,6 @@ pyrightconfig.json
 
 *.lock
 # Unidet checkpoint
-src/UniDet_eval/experts/expert_weights/
+expert_weights/
 # output files
 output/

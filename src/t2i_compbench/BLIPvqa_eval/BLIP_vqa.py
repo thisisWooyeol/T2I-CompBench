@@ -7,7 +7,7 @@ import spacy
 import torch
 from tqdm import tqdm
 
-from BLIPvqa_eval.BLIP.train_vqa_func import VQA_main
+from t2i_compbench.BLIPvqa_eval.BLIP.train_vqa_func import VQA_main
 
 
 def Create_annotation_for_BLIP(image_folder, outpath, np_index=None):

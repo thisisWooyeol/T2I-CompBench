@@ -1,6 +1,6 @@
 from detectron2.config import get_cfg
 
-from UniDet_eval.experts.obj_detection.unidet.config import add_unidet_config
+from t2i_compbench.UniDet_eval.experts.obj_detection.unidet.config import add_unidet_config
 
 
 def setup_cfg(args):

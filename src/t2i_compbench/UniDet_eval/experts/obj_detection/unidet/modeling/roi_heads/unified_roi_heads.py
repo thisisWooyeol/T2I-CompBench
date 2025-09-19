@@ -1,12 +1,14 @@
 import json
-import torch
 
+import torch
+from detectron2.modeling.roi_heads.cascade_rcnn import _ScaleGradient
 from detectron2.modeling.roi_heads.fast_rcnn import fast_rcnn_inference
 from detectron2.modeling.roi_heads.roi_heads import ROI_HEADS_REGISTRY
-from detectron2.modeling.roi_heads.cascade_rcnn import _ScaleGradient
-from .custom_roi_heads import CustomCascadeROIHeads
-
 from detectron2.utils.events import get_event_storage
+
+from t2i_compbench.UniDet_eval import UNIDET_ROOT
+
+from .custom_roi_heads import CustomCascadeROIHeads
 
 
 @ROI_HEADS_REGISTRY.register()
@@ -18,7 +20,9 @@ class UnifiedCascadeROIHeads(CustomCascadeROIHeads):
         self.unified_map_back = cfg.MODEL.ROI_BOX_HEAD.UNIFIED_MAP_BACK
         self.openimage_index = self.dataset_names.index("oid")
         num_classes = cfg.MODEL.ROI_HEADS.NUM_CLASSES
-        label_map = json.load(open(cfg.MULTI_DATASET.UNIFIED_LABEL_FILE, "r"))["label_map"]
+
+        UNIFIED_LABEL_FILE_PATH = UNIDET_ROOT / cfg.MULTI_DATASET.UNIFIED_LABEL_FILE
+        label_map = json.load(open(UNIFIED_LABEL_FILE_PATH, "r"))["label_map"]
         # add background class
         self.dataset_inds = {
             i: torch.tensor([x for x in label_map[d]] + [num_classes]).long().to(torch.device(cfg.MODEL.DEVICE))

@@ -133,6 +133,22 @@ check_command() {
     fi
 }
 
+
+# Download UniDet expert weights if not already present
+if [ ! -d "src/t2i_compbench/UniDet_eval/experts/expert_weights" ]; then
+    echo "UniDet expert weights not found. Downloading..."
+    mkdir -p src/t2i_compbench/UniDet_eval/experts/expert_weights
+    cd src/t2i_compbench/UniDet_eval/experts/expert_weights
+    wget https://huggingface.co/shikunl/prismer/resolve/main/expert_weights/Unified_learned_OCIM_RS200_6x%2B2x.pth
+    wget https://huggingface.co/lllyasviel/ControlNet/resolve/main/annotator/ckpts/dpt_hybrid-midas-501f0c75.pt
+    gdown https://docs.google.com/uc?id=1C4sgkirmgMumKXXiLOPmCKNTZAc3oVbq
+    cd -
+    
+    echo "UniDet expert weights downloaded."
+else
+    echo "UniDet expert weights already present."
+fi
+
 # Run evaluation for each available task
 for TASK in "${AVAILABLE_TASKS[@]}"; do
     echo ""
@@ -146,7 +162,7 @@ for TASK in "${AVAILABLE_TASKS[@]}"; do
             fi
             
             echo "Running BLIP-VQA evaluation on color..."
-            python src/BLIPvqa_eval/BLIP_vqa.py \
+            python src/t2i_compbench/BLIPvqa_eval/BLIP_vqa.py \
                 --input_image_dir "${IMAGE_ROOT_DIR}/color" \
                 --out_dir "${OUT_ROOT_DIR}/color"
             check_command "Color evaluation"
@@ -159,7 +175,7 @@ for TASK in "${AVAILABLE_TASKS[@]}"; do
             fi
             
             echo "Running BLIP-VQA evaluation on texture..."
-            python src/BLIPvqa_eval/BLIP_vqa.py \
+            python src/t2i_compbench/BLIPvqa_eval/BLIP_vqa.py \
                 --input_image_dir "${IMAGE_ROOT_DIR}/texture" \
                 --out_dir "${OUT_ROOT_DIR}/texture"
             check_command "Texture evaluation"
@@ -172,7 +188,7 @@ for TASK in "${AVAILABLE_TASKS[@]}"; do
             fi
             
             echo "Running UniDet evaluation on numeracy..."
-            python src/UniDet_eval/numeracy_eval.py \
+            python src/t2i_compbench/UniDet_eval/numeracy_eval.py \
                 --input_image_dir "${IMAGE_ROOT_DIR}/numeracy" \
                 --out_dir "${OUT_ROOT_DIR}/numeracy"
             check_command "Numeracy evaluation"
@@ -188,14 +204,14 @@ for TASK in "${AVAILABLE_TASKS[@]}"; do
             
             # Step 1: BLIP-VQA evaluation with complex task images
             echo "  Step 1/4: Running BLIP-VQA evaluation..."
-            python src/BLIPvqa_eval/BLIP_vqa.py \
+            python src/t2i_compbench/BLIPvqa_eval/BLIP_vqa.py \
                 --input_image_dir "${IMAGE_ROOT_DIR}/complex" \
                 --out_dir "${OUT_ROOT_DIR}/complex"
             check_command "Complex BLIP-VQA evaluation" || continue
             
             # Step 2: CLIPScore evaluation with complex task images
             echo "  Step 2/4: Running CLIPScore evaluation..."
-            python src/CLIPScore_eval/CLIP_similarity.py \
+            python src/t2i_compbench/CLIPScore_eval/CLIP_similarity.py \
                 --input_image_dir "${IMAGE_ROOT_DIR}/complex" \
                 --out_dir "${OUT_ROOT_DIR}/complex" \
                 --complex
@@ -203,7 +219,7 @@ for TASK in "${AVAILABLE_TASKS[@]}"; do
             
             # Step 3: 2D-spatial relationship evaluation with complex task images
             echo "  Step 3/4: Running 2D-spatial relationship evaluation..."
-            python src/UniDet_eval/2D_spatial_eval.py \
+            python src/t2i_compbench/UniDet_eval/2D_spatial_eval.py \
                 --input_image_dir "${IMAGE_ROOT_DIR}/complex" \
                 --out_dir "${OUT_ROOT_DIR}/complex" \
                 --complex
@@ -211,7 +227,7 @@ for TASK in "${AVAILABLE_TASKS[@]}"; do
             
             # Step 4: 3-in-1 score calculation
             echo "  Step 4/4: Running 3-in-1 score calculation..."
-            python src/3_in_1_eval/3_in_1.py \
+            python src/t2i_compbench/3_in_1_eval/3_in_1.py \
                 --input_result_dir "${OUT_ROOT_DIR}/complex" \
                 --out_dir "${OUT_ROOT_DIR}/complex"
             check_command "Complex 3-in-1 score calculation"

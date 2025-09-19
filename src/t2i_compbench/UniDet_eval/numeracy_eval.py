@@ -10,8 +10,8 @@ from tqdm import tqdm
 from word2number import w2n
 
 # import spacy_universal_sentence_encoder
-from UniDet_eval.experts.model_bank import load_expert_model
-from UniDet_eval.experts.obj_detection.generate_dataset import Dataset, collate_fn
+from t2i_compbench.UniDet_eval.experts.model_bank import load_expert_model
+from t2i_compbench.UniDet_eval.experts.obj_detection.generate_dataset import Dataset, collate_fn
 
 UNIDET_ROOT = Path(__file__).resolve().parent
 obj_label_map = torch.load(UNIDET_ROOT / "dataset/detection_features.pt")["labels"]

@@ -1,10 +1,11 @@
-import torch
 import json
 
+import torch
+from detectron2.modeling.meta_arch import GeneralizedRCNN
+from detectron2.modeling.meta_arch.build import META_ARCH_REGISTRY
 from detectron2.utils.events import get_event_storage
 
-from detectron2.modeling.meta_arch.build import META_ARCH_REGISTRY
-from detectron2.modeling.meta_arch import GeneralizedRCNN
+from t2i_compbench.UniDet_eval import UNIDET_ROOT
 
 
 @META_ARCH_REGISTRY.register()
@@ -18,7 +19,8 @@ class UnifiedRCNN(GeneralizedRCNN):
         self.eval_dataset = -1
         self.cpu_post_process = cfg.CPU_POST_PROCESS  # due to memory issue on mask
 
-        label_map = json.load(open(cfg.MULTI_DATASET.UNIFIED_LABEL_FILE, "r"))["label_map"]
+        UNIFIED_LABEL_FILE_PATH = UNIDET_ROOT / cfg.MULTI_DATASET.UNIFIED_LABEL_FILE
+        label_map = json.load(open(UNIFIED_LABEL_FILE_PATH, "r"))["label_map"]
         self.label_map = {
             self.datasets.index(d): torch.tensor(x).long().to(torch.device(cfg.MODEL.DEVICE))
             for d, x in label_map.items()
