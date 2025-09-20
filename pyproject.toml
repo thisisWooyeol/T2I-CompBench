@@ -42,7 +42,7 @@ run_t2i_compbench_eval = "t2i_compbench.cli:main"
 [tool.uv.sources]
 en-core-web-sm = { url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.5.0/en_core_web_sm-3.5.0-py3-none-any.whl" }
 clip = { git = "https://github.com/openai/CLIP.git" }
-detectron2 = { git = "https://github.com/facebookresearch/detectron2.git" }
+detectron2 = { git = "https://github.com/facebookresearch/detectron2.git", rev = "main" }
 
 
 [tool.uv.extra-build-dependencies]
