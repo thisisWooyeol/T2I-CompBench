@@ -64,6 +64,7 @@ t2i_compbench = [
     "UniDet_eval/configs/*",
     "UniDet_eval/dataset/*",
     "UniDet_eval/experts/**",
+    "UniDet_eval/new_objects.txt",
     # wylee added
     "t2i_dataset/*", 
     "run_t2i_compbench.sh"
