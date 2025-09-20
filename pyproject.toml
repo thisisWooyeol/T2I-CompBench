@@ -57,7 +57,17 @@ build-backend = "setuptools.build_meta"
 where = ["src"]   
 
 [tool.setuptools.package-data]
-t2i_compbench = ["t2i_dataset/*", "run_t2i_compbench.sh"]
+t2i_compbench = [
+    "3_in_1_eval/*",
+    "BLIPvqa_eval/configs/*",
+    "CLIPScore_eval/clip/bpe_simple_vocab_16e6.txt.gz",
+    "UniDet_eval/configs/*",
+    "UniDet_eval/dataset/*",
+    "UniDet_eval/experts/**",
+    # wylee added
+    "t2i_dataset/*", 
+    "run_t2i_compbench.sh"
+]
 
 
 [tool.ruff]
